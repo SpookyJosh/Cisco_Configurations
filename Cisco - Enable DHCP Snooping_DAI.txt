@@ -1,0 +1,60 @@
+##Configure DHCP Snooping on all relevant VLANs##
+IP DHCP Snooping VLAN 3-5
+IP Dhcp Snooping
+
+##Configure a trusted DHCP Snooping interface for the DHCP server##
+Interface Gi1/1/1
+IP Dhcp Snooping Trust
+
+##Verify after your normal DHCP lease period that devices are getting DHCP addresses and logged in dhcp snooping##
+IP DHCP Snooping Binding
+
+##For DAI Configure Uplinks To Other Switches As Trusted##
+
+int gi1/0/24
+ip arp inspection trust
+
+##Configure ARP ACL's For Devices Connected Which Are statically assigned -- not needed if all devices are DHCP enabled##
+
+arp access-list Trusted_Host_VLAN3
+permit ip host 172.16.3.200 mac host 843d.c607.2f74
+permit ip host 172.16.3.201 mac host 843d.c624.a418
+permit ip host 172.16.3.202 mac host 843d.c607.32a0
+permit ip host 172.16.3.203 mac host 843d.c624.b690
+
+arp access-list Trusted_Host_VLAN4
+permit ip host 172.16.4.5 mac host 3005.5c9e.6deb
+permit ip host 172.16.4.41 mac host 6400.6a78.d403
+permit ip host 172.16.4.106 mac host 0060.9503.63b5
+
+arp access-list Trusted_Host_VLAN5
+permit ip host 172.16.5.3 mac host accc.8e5f.1cdf
+permit ip host 172.16.5.4 mac host accc.8e76.51f1
+permit ip host 172.16.5.5 mac host accc.8e76.51e7
+permit ip host 172.16.5.6 mac host accc.8e76.5253
+permit ip host 172.16.5.7 mac host accc.8e76.51fc
+permit ip host 172.16.5.8 mac host accc.8e76.51df
+permit ip host 172.16.5.9 mac host accc.8e76.51de
+permit ip host 172.16.5.10 mac host accc.8e5f.1cd8
+permit ip host 172.16.5.11 mac host accc.8e76.51fd
+permit ip host 172.16.5.12 mac host accc.8e6d.e920
+permit ip host 172.16.5.13 mac host accc.8e68.af54
+permit ip host 172.16.5.14 mac host accc.8e6d.e900
+permit ip host 172.16.5.15 mac host accc.8e76.51e6
+permit ip host 172.16.5.16 mac host accc.8e76.51f0
+
+
+##Assign the ARP ACL's to the associated VLANs##
+
+ip arp inspection filter Trusted_Host_VLAN3 vlan 3
+ip arp inspection filter Trusted_Host_VLAN4 vlan 4
+ip arp inspection filter Trusted_Host_VLAN5 vlan 5
+
+##Enable IP Arp Inspection##
+IP Arp Inspection VLAN 3-5
+
+##Verify Arp Inspection isn't dropping ARP's##
+Show IP Arp Inspection
+
+
+

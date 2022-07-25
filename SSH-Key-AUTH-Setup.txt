@@ -1,0 +1,15 @@
+Install OpenSSL on windows or Linux, whichever workstation will need to connect
+Issue ssh-keygen > specify keysize as 4098 for best security, 2048 is feasible too
+Use default location, in home directory under .ssh directory it will generate rsa_id.pub and rsa_id for pub and priv keys
+Define a passphrase if possible, store passphrase in a password manager. Passphrase will be used each time the host connects
+Using powershell use get-content on the .pub file and pipe it to clipboard.exe to save the key to clipboard
+Next on the Cisco IOS device you will be SSH'ing to, create a new user account for this purpose and assign a strong password
+Now issue ip ssh pubkey-chain > username [username created above] > key-string > [enter public key copied above, you MAY need to paste into notedpad and split key into multiple lines as it may exceed Cisco's single line limit] - type and enter exit multiple times to end
+Now at this point you can test ssh'ing into the device using the username defined@ipaddress and if you defined a passphrase you will be prompted for that now
+To disable password authentication run the command 'ip ssh server algorithm authentication publickey' and then 'no ip ssh server algorithm authentication password'
+
+
+**To remove or change a user's SSH key you must delete any existing keys they have**
+ip ssh pubkey-chain
+username [username]
+no key-hash

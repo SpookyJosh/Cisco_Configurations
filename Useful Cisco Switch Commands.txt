@@ -1,0 +1,39 @@
+Cisco Switch Commands:
+
+Enable Mode Commands:
+==================================================================
+
+show lldp neighbors -> Displays neighboring devices and what interface they are on
+
+show lldp neighbors "interface name" detail -> Shows more details about devices connected on one port (Ex: show lldp neighbors gi 1/0/13 detail
+)
+
+Show cdp neighbors -> Shows neighboring Cisco devices, Cisco proprietary protocol
+
+show cdp neighbors "interface name" detail -> Shows extended details included IP address of neighbor on an individual interface
+
+banner motd # insert message here # - >
+
+Show version -> Shows IOS version + system up time
+
+Show Running Configuration -> Shows the active switch configuration including interfaces and vlans
+
+Reload in "x" -> Sets the switch to reboot in a specified number of minutes (x)
+
+archive download-sw /force-reload /create-space /overwrite tftp://osm ip/ios file  -> Update's cisco ios firmware
+
+show environment -> Show's temp's and physical hardware status
+
+show env all -> same as above
+
+show vtp status -> Displays vtp configuration including its mode (client/server), vtp domain, ip of vtp server, and no. of vlans
+
+Configuration commands:
+==================================================================
+
+vtp domain "name of vtp domain" -> configures vtp domain name
+
+vtp password "password" -> Configures the password used by that vtp domain
+
+vtp mode "client/server" -> Use either client or server depending on what switch you're configuring
+

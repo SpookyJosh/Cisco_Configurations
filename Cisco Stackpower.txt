@@ -1,0 +1,33 @@
+Cisco Stackpower:
+=================================================
+Show commands:
+Show stack-power detail --> Shows detail overview for switches in stack
+Show stack-power budgeting --> Shows detailed power budgeting for each switch
+Show environment Power All --> Shows power supplies in stack-power
+Show stack-power load-shedding --> Shows switch priotity as well as high/low priority in stack
+
+=================================================
+Terminology:
+Ring Topology --> Physical topology in which up to four switches can be stackpower stacked directly together
+Star Topology --> Physical topology in which up to eight switches can be stackpower stacked via use of Cisco XPS 2200 external power system
+Power-sharing mode (non-strict) --> Default mode, total power across all switches is treated as single pool of power distributed evenly to all switches. If power budget is exceeded but total available power is still sufficient for needed devices budget will be exceeded.
+Power-sharing mode (strict) --> In strict mode when available power falls below 'budgeted' amount, system will start 'shedding' by turning off power to low priority poe devices.
+Redundant Mode (non-strict) --> Subtracts power of largest supply in system from total power budget. If a power supply in use fails, that unused power will be added to budget to allow system to continue supplying power.
+Redundant mode (strict) --> In strict mode if power budget is allocated, low priority devices will have power shut off even if total available system power would still accomodate.
+Switch Priority --> The priority number between 1 and 9. The lower numbered switches will have higher priority in the event of power shedding due to a lack of available power.
+High Priority Ports --> Priority number between 10 and 18. The lower numbered ports will have higher priority in the event of power sheeding due to a lack of available power.
+Low Priority Ports --> Priority number between 19 and 27. Lower numbered ports will have higher priority in event of power shedding. By default all 
+
+=================================================
+Commands:
+Stack-power switch # --> Enters stackpower config for the desired switch
+power-priority switch # --> Configures the currently select switch priority
+power-priority high # --> Configures currently selected switches high-port priority
+power-priority low # --> Configures currently selected switches low-port priority
+stack-power stack 'stackpowername' --> Enters configuration of the stack name
+Mode 'power-shared/redundant' 'strict/non-strict' --> Configures operation mode of current powerstack
+
+=================================================
+Best practices:
+1. Ensure power consumption at each individual switch does not exceed 1000 watts above its locally installed power supply capacity. IE if a switch has two 715 watt power supplies, don't exceed 2430 watts of total consumption at that switch.
+2. Ensure each switch has at least one power supply installed before installing a second in any of the other switches in the stack

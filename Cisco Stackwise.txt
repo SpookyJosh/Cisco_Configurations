@@ -1,0 +1,34 @@
+Cisco Stackwise:
+===================================================
+Terminology:
+===================================================
+Ring Architecture --> Stackwise forms multiple rings between the switches in the stack. a 480 capable switch/cable will form 6 rings at 40gbps per ring, thus 240gbps per cable since switches have two stackports
+Spatial Reuse Protocol (SRP) --> Protocol used to aggregate stack rings through use of unicast communication
+Stack Discovery Protocol (SDP) --> Protocol used to build a switch stack, occurs once a switch powers on. Sends broadcast traffic to discover neighboring switches. Once switches are discovered, switch numbers are assigned.
+Active Election --> Process switches go through to determine an active switch, a standby switch, and assigns 'member' to all remaining switches. All switches that boot up within 120 seconds of each other participate in active switch election.
+Active Switch --> Elected on startup. A switch is deemed the active switch as long as it boots within 120 seconds of all the other participating switches and meets the following: Has the highest priority, or if priorities are the same the lowest numerical MAC address.
+Standby Switch --> Once an active switch is elected, the switch that has either the second lowest priority OR if priorities are identical then the switch with the second lowest MAC address will be standby. Becomes active switch when active switch goes down.
+Member switch --> All switches that are neither active nor standby in the stack.
+Switch number --> Switches in a stack are numbered 1-8. These numbers identify which switch is being referenced and is usually a logical assignment, ie bottom switch can be switch 3 and top switch could be 6.
+Nonstop Forwarding (NSF) --> Protocol used by switches in a stack to ensure that layer 3 packets continue to be forwarded in the event of an active switch in the stack going down by ensuring maintaining a forwarding information base across all the switches
+Stateful Switchover (SSO) --> Protocol used in conjunction with NSF to ensure that traffic processing is successfully handled in the event of an active switch outage and that the switches can elect a new active/standby pair.
+Switch addition --> To add a switch to the stack, this can be done live. The bottom switch must be disconnected from the top switch first. This will put the switch ring into half speed (240gbps) until the new switch is added and initializes.
+Switch removal -->Opposite of switch addition. Can be done on the fly, stack operates at half bandwidth until the ring is restored.
+Stack joining --> Two switch stacks can be joined together. When two stacks are joined, the stack with the active switch with the lowest priority will reload and be joined to the stack and assigned numbers. when priorities are the same, the active switch with the highest numerical MAC will be reloaded.
+Stack Splitting --> A stack can be split off, in this case the member switches will be reloaded and each stack will elect a new active/standby.
+
+Two ways to influence election results:
+1. Set desired active switch with a priority of 15 to ensure it will always be active on election
+2. When starting up a stack, start up the desired active switch by itself, then after several minutes start other switches up. If only one switch powers on, it assumes active state.
+
+Commands:
+===================================================
+switch # priority #1-15 --> Command used in privilege exec mode (enable mode) to manually set the priority of a switch in the stack. 15 is highest priority, and will always ensure it is active switch. If you want a particular active and standby each time set 15 and 14.
+## above command requires a reload of the switch to apply
+switch # renumber #1-8 --> Assigns new switch # to the switch in stack. Requires reload to apply.
+nsf --> Command that enables NSF, this must be configured from within the routing protocol configuration
+sh ip protocols --> Command that can also be used to verify that NSF is running under the particular routing protocol.
+show switch stack-ring speed --> Command to display the current stack speed operation
+Show Switch Stack-Ports --> Displays status of stack ports
+Software auto-upgrade enable --> Command used to enable auto-upgrade. Which allows newly added switches in a stack to automatically receive the same IOS software version as the other switches in the stack.
+Show license usage --> Displays license status for the stack

@@ -1,0 +1,67 @@
+Terminology:
+====================
+Virtual SAN (VSAN) --> provides more isolation among devices on the same fabric. Think of VSANs as vlans. Devices in a VSAN can talk, devices in other VSANs cannot. VSANs contain a list of ports which connect to the devices on the SAN
+Principal Switch --> The master switch in a switch fabric. If more than one switch exists in the fabric the election occurs automatically - similar to Spanning Tree.
+Domain_ID - Identifier assigned to each switch in the fabric. These are determined by the principal switch. In large deployments the Domain_ID should be configured manually on each switch.
+Fabric logins (FLOGI) --> The process a SAN device goes through when it first connects. It shares its WWNN and WWPN information with the switch
+Fibre Channel ID (FCID) --> Identifier assigned to each Node WWPN. The switch maintains a translation between FCID and WWPN. The FCID is derived from the Domain_ID, something called an Area_ID, and the WWN of the node
+FCNS - A table containing a list of all the FCID to WWPN mappings across the whole switch fabric. Similar to FLOGI but fabric wide
+Smart Zoning --> functionality in Cisco switches that allows you to configure one zone with all your members. Members are configured either as initiators or targets.
+World Wide Node Name (WWNN) --> A unique 16 hex character Identifier given to the node device itself, sometimes a single HBA with two ports may use the same WWNN for both ports while other times each port may have a unique WWNN. Ex: 20:00:f4:e9:d4:eb:90:2a
+World Wide Port Name (WWPN) --> A unique 16 hex character identifier for each port in a fabric. This is the value that is 'burned' into the port itself and used to communicate with individual ports. Ex: 21:00:f4:e9:d4:eb:90:2a
+N-Port --> Also called a node port. These represent a target or "host" - in other words the hba on the server. N-ports connect to F-ports
+F-Port --> Also called a fabric port. F-ports are used to connect to N-Ports using a fiber cable
+E-Port --> Also called an expansion port. Refers to links connecting two fabric switches.
+
+Commands:
+======================
+Show flogi database --> command that shows the local switches FCID to WWPN/WWNN mappings
+Show fcns database --> Command that shows FCID to WWPN mappings fabric wide
+show fcns database detail vsan # --> Shows more detailed view of FCID to WWPN mappings.
+show fcdomain vsan # --> Shows Domain_ID of Vsan.
+fcdomain domain 'Static_Domain_ID' static vsan # --> Command to statically set the Domain_ID for the Vsan. Make sure this value is unique for each fabric switch.
+fcdomain fcid persistent vsan # --> Sets persistent FCID's for the Vsan. Ensures each connected node is assigned the same FCID across switch reboots.
+Show vsan --> Shows the current vsan's and their status
+vsan database --> puts you in vsan database mode to create vsan
+vsan # --> Creates vsan using the ID specified
+Vsan # name Test --> gives vsan with ID a name
+Vsan # interface Fc1/x --> Configures one or more interfaces as members of the VSAN
+zoneset distribute full vsan # --> Tells each switch in the fabric to distribute zoning info for this vsan to each other
+Connect device to a port you added to your vsan and then turn the switchport on using the no shut command
+Show int fc1/x brief --> shows the port status as well as vsan number and operation mode
+Show flogi database should now show information
+Plug switches in together
+On each switch interface - run the following command:
+Switchport trunk mode on
+On the switch uplink/expansion port(s) run:
+Switchport trunk allowed vsan #
+
+Show Zone Status Vsan # --> Shows zoning 
+zone smart-zoning enable vsan # --> Enables smart zoning on the VSAN
+Zoneset name 'Zonesetname' vsan #
+Zone name 'Zonename' vsan #
+member pwwn 'pwwn' initiator --> set this for pwwn's of your servers
+member pwwn 'pwwn' Target --> Set this for pwwn's of storage array
+Zoneset name 'zonesetname' vsan #
+member 'Zonename'
+Zoneset activate name 'zonesetname' vsan # --> Activates the zoneset you created above
+show zoneset --> Shows all the zonesets configured
+Show zoneset active --> Shows the active zonesets
+
+**You can also create fcaliases and add those as members to your zone(s) as needed in place is typing out the full pwwn if you are in a larger environment
+
+**For this config we use basic zoning which requires you to run the cmd Zoneset activate in order to initiate the switch to distribute zoning changes to the other's in the fabric. 
+You can setup enhanced zoning using "zone mode enhanced vsan #" on each switch - which locks a user from making a change while another tech is logged into a switch.
+
+
+
+Show fcns database --> Shows the list of connected hba's
+Create fcAlias for hosts and storage array
+
+
+Resources: 
+==========================
+https://overlaid.net/2014/08/16/fibre-channel-fc-basics-for-ccie-dc/
+https://davidring.ie/2015/09/30/cisco-mds-useful-show-commands/
+https://lejyphilip.blogspot.com/2013/04/difference-between-wwn-and-wwpn.html
+https://www.enterprisestorageforum.com/networking/storage-networking-basics-understanding-fibre-channel-domains/

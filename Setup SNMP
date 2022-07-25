@@ -1,0 +1,56 @@
+ACL 
+
+ip access-list standard DOMOTZ-SNMP
+permit 172.16.6.19 0.0.0.0
+permit 172.16.2.3 0.0.0.0
+permit 172.16.0.3 0.0.0.0
+permit 172.16.255.3 0.0.0.0
+permit 192.168.100.253 0.0.0.0
+permit 192.168.101.5 0.0.0.0
+permit 10.1.0.3 0.0.0.0
+permit 10.100.0.3 0.0.0.0
+
+
+
+
+SNMPv3
+
+snmp-server view DOMOTZ-VIEW iso included ---> Gives access to everything
+snmp-server view DOMOTZ-VIEW mib-2 included ---> Gives access just to management information
+snmp-server group DOMOTZ-GROUP v3 priv read DOMOTZ-VIEW write DOMOTZ-VIEW
+snmp-server user DOMOTZSNMP DOMOTZ-GROUP v3 auth sha dicky-4$YS4 priv aes 128 n
+
+SNMPv2
+
+snmp-server community DOMOCISCOSNMPRO ro DOMOTZ-SNMP
+snmp-server community DOMOCISCOSNMPRW rw DOMOTZ-SNMP
+
+Archive management for DOMOTZ
+
+ip scp server enable
+archive
+path flash:archive
+
+snmp-server location Server Room
+snmp-server contact Jim Horton
+
+
+Links/Resources
+
+http://ireasoning.com/mibbrowser.shtml
+https://snmp.cloudapps.cisco.com/Support/SNMP/do/BrowseOID.do?local=en&translate=Translate&objectInput=1.3.6.1.2.1
+
+
+WLC:
+
+Auth -DOMOWLCSNMP6%
+Encryp - DOMOAUTHWLC6&
+
+
+DOMOCISCOSNMPRO
+DOMOCISCOSNMPRW
+
+Axis --> pear-vB&!74
+
+DOMOAXISSNMPRO
+DOMOAXISSNMPRW

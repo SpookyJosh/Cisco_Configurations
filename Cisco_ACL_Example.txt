@@ -1,0 +1,37 @@
+Interface Vlan4
+description Guest Network
+IP Address 10.0.2.129 255.255.255.192
+ip helper-address 10.0.1.253
+
+
+ip access-list extended GUEST_VLAN4_IN
+Remark Allow DHCP
+1 permit udp 10.0.2.128 0.0.0.63 eq bootpc host 10.0.1.253
+2 permit udp 10.0.2.128 0.0.0.63 eq bootps host 10.0.1.253
+Remark Allow DNS
+3 permit udp 10.0.2.128 0.0.0.63 eq domain host 10.0.1.253
+Remark Allow Gateway_Firewall
+4 permit ip 10.0.2.128 0.0.0.63 host 10.0.2.129
+5 permit ip 10.0.2.128 0.0.0.63 host 10.0.1.254
+Remark Block VLAN4 To Other VLAN
+6 deny ip 10.0.2.128 0.0.0.63 10.0.1.0 0.0.0.255
+7 deny ip 10.0.2.128 0.0.0.63 10.0.2.0 0.0.0.63
+8 deny ip 10.0.2.128 0.0.0.63 10.0.2.64 0.0.0.63
+9 deny ip 10.0.2.128 0.0.0.63 10.0.2.192 0.0.0.63
+10 deny ip 10.0.2.128 0.0.0.63 10.0.2.128 0.0.0.63
+Remark Block Other VLAN To VLAN 4
+11 deny ip 10.0.1.0 0.0.0.255 10.0.2.128 0.0.0.63
+12 deny ip 10.0.2.0 0.0.0.63 10.0.2.128 0.0.0.63
+13 deny ip 10.0.2.64 0.0.0.63 10.0.2.128 0.0.0.63
+14 deny ip 10.0.2.192 0.0.0.63 10.0.2.128 0.0.0.63
+Remark Block APIPA Addresses
+15 deny ip any 169.254.0.0 0.0.255.255
+Remark Implicit permit
+16 permit ip any any
+Remark Implcit Deny
+17 Deny ip any any
+
+Interface Vlan 4
+IP Access-Group GUEST_VLAN4 in
+IP Access-Group GUEST_VLAN4 out
+
