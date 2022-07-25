@@ -1,0 +1,35 @@
+Technical resources:
+https://www.cisco.com/en/US/docs/switches/lan/catalyst3850/software/release/3se/consolidated_guide/b_consolidated_3850_3se_cg_chapter_0111101.html
+https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/69980-errdisable-recovery.html
+============================================================================================
+Terminology:
+ARP - L3 protocol used to build association of IP address and MAC address which allows for unicast packets
+ARP Request - Type of ARP broadcast that enables a host to discover a particular MAC address knowing only the IP
+ARP Response (Reply) - Type of ARP message that enables a host to respond to another host's ARP Request
+Gratuitous ARP - Classified as an ARP response that is not replying to a request but is rather used to announce a host's IP and MAC address to the broadcast domain
+Err-Disable - a state that Cisco uses for its switchports that violate a specific security configuration
+Err-Disable Recovery - A global switch configuration on Cisco switches that enable one to tell Cisco to bring an err-disable switchport back online after a set amount of time following the violation
+ARP Poisoning - An attack that takes advantage of the ARP protocol for MiTM attacks
+IP ARP Inspection - Security configuration used by Cisco to prevent arp poisoning attacks by dropping ARP packets from MAC addresses whom do not have a matching DHCP snooping binding table entry
+DHCP snooping - Security configuration used to block DHCP responses from unauthorized interfaces. Maintains a binding table of all MAC address/IP address pairs by capturing DHCP packets
+IP ARP Inspection Rate Limit -- A security feature used to prevent an excess number of ARP reply's on a single interface. By default Cisco sets this to 15 and should be increased on modern networks
+=============================================================================================
+Configurations:
+
+Arp inspection setup:
+
+1. Configure ARP inspection rate limit:
+int range gix/x-x/x
+ip arp inspection limit rate # (between 0-2048 (default 15) )
+
+2. Configure Global errdisable recovery:
+errdisable recovery cause arp inspection -- Enables global recovery from errdisable state, default is 300 seconds
+errdisable recover interval # (between 30-36400 seconds)
+
+3. Configure ARP Inspection Trusted interface(s):
+int gix/x
+ip arp inspection trust -- sets interface to trust arps received, crucial to set before enabling arp inspection, set on uplinks to any other switches
+exit
+
+4. Enable IP ARP Inspection:
+ip arp inspection vlan #
