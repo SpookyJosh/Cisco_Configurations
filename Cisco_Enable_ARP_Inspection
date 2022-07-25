@@ -23,8 +23,8 @@ int range gix/x-x/x
 ip arp inspection limit rate # (between 0-2048 (default 15) )
 
 2. Configure Global errdisable recovery:
-errdisable recovery cause arp inspection -- Enables global recovery from errdisable state, default is 300 seconds
-errdisable recover interval # (between 30-36400 seconds)
+errdisable recovery cause arp-inspection -- Enables global recovery from errdisable state
+(Optional) errdisable recovery interval # (between 30-36400 seconds - default is 300)
 
 3. Configure ARP Inspection Trusted interface(s):
 int gix/x
