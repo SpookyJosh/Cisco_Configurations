@@ -9,7 +9,7 @@ Install remove inactive --> Another command which will check for and remove unus
 
 Step 2: Copy New Image To Flash
 Browse to https://software.cisco.com/# --> Login with corporate credentials. Download the most recent stable IOS XE version available. Copy to TFTP server Or USB drive.
-copy tftp://172.16.0.237/TFTPD64/cat9k_iosxe.17.03.03.SPA.bin flash: --> Command that tftp's the new .bin package to switch
+copy tftp://x.x.x.x/TFTPD64/cat9k_iosxe.17.03.03.SPA.bin flash: --> Command that tftp's the new .bin package to switch
 copy usbflash0-3:cat9k_iosxe.17.03.03.SPA.bin flash: --> Command that copies bin file from usb drive
 dir flash:*.bin --> Command that validates the .bin was copied over
 
